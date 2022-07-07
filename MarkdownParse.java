@@ -16,8 +16,35 @@ public class MarkdownParse {
             int closeBracket = markdown.indexOf("]", openBracket);
             int openParen = markdown.indexOf("(", closeBracket);
             int closeParen = markdown.indexOf(")", openParen);
-            toReturn.add(markdown.substring(openParen + 1, closeParen));
+
+            // if markdown.indexOf() returns -1 then set currentIndex = 0
+            if(openBracket==-1 || closeBracket==-1 || openParen==-1 || closeParen==-1) {
+                break;
+            }
+            /* Now that we have found positions of all the ()[] we can change
+            the value of current index freely without affecting any of our other
+            checks */
             currentIndex = closeParen + 1;
+            
+            // Check if there is text between openBracket and closeBracket
+            if(openBracket+1 == closeBracket) {
+                continue;
+            }
+            // Check if there is text between openParen and closeParen
+            if(openParen+1 == closeParen) {
+                continue;
+            }
+            // Check if there is no space between closeBracket and openParen
+            if(closeBracket+1 != openParen) {
+                continue;
+            }
+            // Check if there is no '!' before openBracket
+            if(openBracket!=0) {
+                if(markdown.charAt(openBracket-1) == '!') {
+                    continue;
+                }
+            }
+            toReturn.add(markdown.substring(openParen + 1, closeParen));
         }
 
         return toReturn;
